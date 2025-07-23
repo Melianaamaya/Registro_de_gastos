@@ -17,4 +17,14 @@ export class Gasto {
 
   @ManyToOne(() => Categoria, (categoria) => categoria.gastos)
   categoria: Categoria;
+
+// Campos para cuotas:
+@Column({ default: false })
+esCuota: boolean;
+
+@Column({ nullable: true, type: 'int' })
+cuotaActual?: number;
+
+@Column({ nullable: true, type: 'int' })
+totalCuotas?: number;
 }

@@ -16,24 +16,28 @@ export class GastosService {
     private categoriaRepository: Repository<Categoria>,
   ) {}
 
-  async create(dto: CreateGastoDto) {
-    const categoria = await this.categoriaRepository.findOne({
-      where: { id: dto.categoriaId },
-    });
+  async create(dto: CreateGastoDto): Promise<Gasto> {
+  const categoria = await this.categoriaRepository.findOne({
+    where: { id: dto.categoriaId },
+  });
 
-    if (!categoria) {
-      throw new NotFoundException('Categoría no encontrada');
-    }
-
-    const gasto = this.gastoRepository.create({
-      descripcion: dto.descripcion,
-      monto: dto.monto,
-      fecha: dto.fecha,
-      categoria: categoria,
-    });
-
-    return this.gastoRepository.save(gasto);
+  if (!categoria) {
+    throw new NotFoundException('Categoría no encontrada');
   }
+
+  const gasto = new Gasto();
+  gasto.descripcion = dto.descripcion;
+  gasto.monto = dto.monto;
+  gasto.fecha = dto.fecha;
+  gasto.categoria = categoria;
+  gasto.esCuota = dto.esCuota ?? false;
+  gasto.cuotaActual = dto.cuotaActual;
+  gasto.totalCuotas = dto.totalCuotas;
+
+
+  return this.gastoRepository.save(gasto);
+}
+
 
   findAll() {
     return this.gastoRepository.find({ relations: ['categoria'] });
@@ -59,6 +63,10 @@ export class GastosService {
       if (!categoria) throw new NotFoundException('Categoría no encontrada');
       gasto.categoria = categoria;
     }
+
+    if (dto.esCuota !== undefined) gasto.esCuota = dto.esCuota;
+    if (dto.cuotaActual !== undefined) gasto.cuotaActual = dto.cuotaActual;
+    if (dto.totalCuotas !== undefined) gasto.totalCuotas = dto.totalCuotas;
 
     Object.assign(gasto, dto);
     return this.gastoRepository.save(gasto);

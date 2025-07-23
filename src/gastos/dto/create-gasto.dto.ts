@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsDateString, IsInt } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsDateString, IsInt, IsBoolean, IsOptional, Min, Max } from 'class-validator';
 
 export class CreateGastoDto {
   @IsString()
@@ -13,4 +13,18 @@ export class CreateGastoDto {
 
   @IsInt()
   categoriaId: number;
+
+  @IsBoolean()
+  @IsOptional()
+  esCuota?: boolean;
+
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  cuotaActual?: number;
+
+  @IsInt()
+  @Min(1)
+  @IsOptional()
+  totalCuotas?: number;
 }
